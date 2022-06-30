@@ -351,8 +351,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 20
-#define YY_END_OF_BUFFER 21
+#define YY_NUM_RULES 19
+#define YY_END_OF_BUFFER 20
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -362,10 +362,10 @@ struct yy_trans_info
 	};
 static const flex_int16_t yy_accept[35] =
     {   0,
-        0,    0,   21,   19,    1,    9,   10,   11,    6,    4,
-        5,    7,    2,    3,    8,   18,   18,   18,   18,   12,
-       13,    2,   18,   18,   16,   18,   18,   18,   14,   18,
-       18,   15,   17,    0
+        0,    0,   20,   18,   19,    8,    9,   10,    5,    3,
+        4,    6,    1,    2,    7,   17,   17,   17,   17,   11,
+       12,    1,   17,   17,   15,   17,   17,   17,   13,   17,
+       17,   14,   16,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -464,8 +464,9 @@ char *yytext;
 #line 1 "hel.l"
 #line 2 "hel.l"
     #include "hel.tab.h"
-#line 467 "lex.yy.c"
+    static int once = 0;
 #line 468 "lex.yy.c"
+#line 469 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -682,10 +683,10 @@ YY_DECL
 		}
 
 	{
-#line 8 "hel.l"
+#line 9 "hel.l"
 
 
-#line 688 "lex.yy.c"
+#line 689 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -743,107 +744,101 @@ do_action:	/* This label is used only to access EOF actions. */
 			goto yy_find_action;
 
 case 1:
-/* rule 1 can match eol */
-YY_RULE_SETUP
-#line 10 "hel.l"
-{return EOL;}
-	YY_BREAK
-case 2:
 YY_RULE_SETUP
 #line 11 "hel.l"
 {yylval.num = atoi(yytext); return (NUM);}
 	YY_BREAK
-case 3:
+case 2:
 YY_RULE_SETUP
 #line 13 "hel.l"
 {return (SEMICOLON);}
 	YY_BREAK
-case 4:
+case 3:
 YY_RULE_SETUP
 #line 14 "hel.l"
 {return PLUS;}
 	YY_BREAK
-case 5:
+case 4:
 YY_RULE_SETUP
 #line 15 "hel.l"
 {return MINUS;}
 	YY_BREAK
-case 6:
+case 5:
 YY_RULE_SETUP
 #line 16 "hel.l"
 {return TIMES;}
 	YY_BREAK
-case 7:
+case 6:
 YY_RULE_SETUP
 #line 17 "hel.l"
 {return DIVIDED_BY;}
 	YY_BREAK
-case 8:
+case 7:
 YY_RULE_SETUP
 #line 18 "hel.l"
 {return EQUALS;}
 	YY_BREAK
-case 9:
+case 8:
 YY_RULE_SETUP
 #line 19 "hel.l"
 {return DQUOTES;}
 	YY_BREAK
-case 10:
+case 9:
 YY_RULE_SETUP
 #line 20 "hel.l"
 {return LPAREN;}
 	YY_BREAK
-case 11:
+case 10:
 YY_RULE_SETUP
 #line 21 "hel.l"
 {return RPAREN;}
 	YY_BREAK
-case 12:
+case 11:
 YY_RULE_SETUP
 #line 22 "hel.l"
 {return LBRACKET;}
 	YY_BREAK
-case 13:
+case 12:
 YY_RULE_SETUP
 #line 23 "hel.l"
 {return RBRACKET;}
 	YY_BREAK
-case 14:
+case 13:
 YY_RULE_SETUP
 #line 25 "hel.l"
 {yylval.num = TYPE_INT; return TYPE_INT;}
 	YY_BREAK
-case 15:
+case 14:
 YY_RULE_SETUP
 #line 27 "hel.l"
 {return KW_SHOW;}
 	YY_BREAK
-case 16:
+case 15:
 YY_RULE_SETUP
 #line 28 "hel.l"
 {return KW_IF;}
 	YY_BREAK
-case 17:
+case 16:
 YY_RULE_SETUP
 #line 30 "hel.l"
 {return DEBUG;}
 	YY_BREAK
-case 18:
+case 17:
 YY_RULE_SETUP
 #line 31 "hel.l"
 {yylval.string = yytext; return STRING;}
 	YY_BREAK
-case 19:
+case 18:
 YY_RULE_SETUP
 #line 32 "hel.l"
 {}
 	YY_BREAK
-case 20:
+case 19:
 YY_RULE_SETUP
 #line 35 "hel.l"
 ECHO;
 	YY_BREAK
-#line 846 "lex.yy.c"
+#line 841 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

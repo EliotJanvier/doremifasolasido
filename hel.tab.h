@@ -56,25 +56,24 @@ extern int yydebug;
     YYUNDEF = 257,                 /* "invalid token"  */
     DEBUG = 258,                   /* DEBUG  */
     ANY = 259,                     /* ANY  */
-    EOL = 260,                     /* EOL  */
-    NUM = 261,                     /* NUM  */
-    SEMICOLON = 262,               /* SEMICOLON  */
-    PLUS = 263,                    /* PLUS  */
-    MINUS = 264,                   /* MINUS  */
-    DIVIDED_BY = 265,              /* DIVIDED_BY  */
-    TIMES = 266,                   /* TIMES  */
-    STRING = 267,                  /* STRING  */
-    VARNAME = 268,                 /* VARNAME  */
-    EQUALS = 269,                  /* EQUALS  */
-    DQUOTES = 270,                 /* DQUOTES  */
-    LPAREN = 271,                  /* LPAREN  */
-    RPAREN = 272,                  /* RPAREN  */
-    LBRACKET = 273,                /* LBRACKET  */
-    RBRACKET = 274,                /* RBRACKET  */
-    TYPE_STRING = 275,             /* TYPE_STRING  */
-    TYPE_INT = 276,                /* TYPE_INT  */
-    KW_SHOW = 277,                 /* KW_SHOW  */
-    KW_IF = 278                    /* KW_IF  */
+    NUM = 260,                     /* NUM  */
+    SEMICOLON = 261,               /* SEMICOLON  */
+    PLUS = 262,                    /* PLUS  */
+    MINUS = 263,                   /* MINUS  */
+    DIVIDED_BY = 264,              /* DIVIDED_BY  */
+    TIMES = 265,                   /* TIMES  */
+    STRING = 266,                  /* STRING  */
+    VARNAME = 267,                 /* VARNAME  */
+    EQUALS = 268,                  /* EQUALS  */
+    DQUOTES = 269,                 /* DQUOTES  */
+    LPAREN = 270,                  /* LPAREN  */
+    RPAREN = 271,                  /* RPAREN  */
+    LBRACKET = 272,                /* LBRACKET  */
+    RBRACKET = 273,                /* RBRACKET  */
+    TYPE_STRING = 274,             /* TYPE_STRING  */
+    TYPE_INT = 275,                /* TYPE_INT  */
+    KW_SHOW = 276,                 /* KW_SHOW  */
+    KW_IF = 277                    /* KW_IF  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -83,8 +82,9 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 25 "hel.y"
+#line 28 "hel.y"
 
+    struct node *tree;
     int num;
     char character;
     char *string;

@@ -1,5 +1,6 @@
 %{
     #include "hel.tab.h"
+    static int once = 0;
 %}
 
 number ([0-9])+
@@ -7,7 +8,6 @@ string ([a-z])+
 
 %%
 
-"\n" {return EOL;}
 {number} {yylval.num = atoi(yytext); return (NUM);}
 
 ";"     {return (SEMICOLON);}

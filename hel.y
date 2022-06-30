@@ -3,8 +3,11 @@
     #include "./include/variable.h"
     #include "./include/show.h"
     #include "./include/list.h"
+    #include "./include/tree.h"
+    #include "./include/keyword.h"
     #include <stdlib.h>
     #include <string.h>
+
 
 
     int yylex();
@@ -18,21 +21,22 @@
     extern size_t mem_size = 0;
     extern variable_t *memory = NULL;
 
-    extern int *depth_execute = NULL;
-    extern int detpth = 1;
+    tree_t ast_root = NULL;
+    static int node_id = 0;
 %}
 
 %union {
+    struct node *tree;
     int num;
     char character;
     char *string;
     struct variable *var;
 };
 
+
 %token DEBUG
 
 %token ANY
-%token EOL
 %token<num> NUM
 %token SEMICOLON
 %token PLUS
@@ -51,105 +55,53 @@
 %token TYPE_STRING
 %token<num> TYPE_INT
 
-%token KW_SHOW
+%token<tree> KW_SHOW
 %token KW_IF
 
-%type<num> exp
-%type<var> variable
-%type<num> type
-%type<num> condition
+%type<tree> exp
+%type<tree> keyword_exp
+%type<tree> statement
+
 
 %%
 
+
 input:
-|   line input
-;
-
-line:
-    debug
-|   line_jumps
-|   statement
-
-;
-
-exp:
-    NUM {$$ = $1;}
-|   LPAREN exp RPAREN {$$ = $2;}
-|   exp MINUS exp {$$ = $1 - $3;}
-|   exp PLUS exp {$$ = $1 + $3;}
-|   exp TIMES exp {$$ = $1 * $3;}
-|   exp DIVIDED_BY exp {$$ = $1 / $3;}
-|   variable {$$ = *(int *) $1->ptr;}
-;
-
-line_jumps:
-    EOL
-|   line_jumps EOL
-;
-
-type:
-    TYPE_INT {$$ = yylval.num;}
-
-new_var:
-    type STRING {
-            create_var($1, $2, 0);
-        }
-;
-
-debug:
-    DEBUG {
-        for (int i = 0; i < mem_size; ++i) {
-            printf("var: [%s]\n", memory[i].name);
-        }
-    }
-
-show:
-    KW_SHOW STRING {show_variable(get_var_by_name($2));}
-;
-
-variable:
-    STRING {$$ = get_var_by_name(yyval.string);}
-;
-
-if_else:
-    KW_IF condition EOL statement
-
-condition:
-    exp {$$ = $1}
+|   statement input
 ;
 
 statement:
-    SEMICOLON
-|   statement statement
-|   new_var EQUALS exp SEMICOLON {assign_value_to_var_from_index(mem_size - 1, $3);}
-|   new_var SEMICOLON
-|   variable EQUALS exp SEMICOLON {assign_value_to_var($1, $3);}
-|   show SEMICOLON
-|   exp SEMICOLON {printf("%d\n", $1);}
-|   exp SEMICOLON EOL {printf("%d\n", $1);}
-|   exp EOL {printf("%d\n", $1);}
+    statement statement     {$1->next = $2;}
+|   exp SEMICOLON           {if (ast_root == NULL) ast_root = $1;}
 ;
 
-block:
-    LBRACKET {
-        depth_execute = realloc(depth_execute, sizeof(int) * (depth + 1));
-        depth_execute[depth] = 1;
-        ++depth;
-    }
-|   RBRACKET {
-        depth_execute = realloc(depth_execute, sizeof(int) * (depth - 1));
-        --depth;
-    }
+exp:
+    NUM                     {$$ = new_tree(NODE_INT, (obj_t) $1, node_id++, NULL, NULL, NULL);}
+|   exp MINUS exp           {$$ = new_tree(NODE_OPERATOR, (obj_t) OP_SUB, node_id++, $1, $3, NULL);}
+|   exp PLUS exp            {$$ = new_tree(NODE_OPERATOR, (obj_t) OP_ADD, node_id++, $1, $3, NULL);}
+|   exp TIMES exp           {$$ = new_tree(NODE_OPERATOR, (obj_t) OP_MUL, node_id++, $1, $3, NULL);}
+|   exp DIVIDED_BY exp      {$$ = new_tree(NODE_OPERATOR, (obj_t) OP_DIV, node_id++, $1, $3, NULL);}
+|   keyword_exp
 ;
+
+keyword_exp:
+    KW_SHOW exp              {$$ = new_tree(NODE_KW, (obj_t) keyword_handlers[KWORD_SHOW], node_id++, $2, NULL, NULL);}
+;
+
+
 %%
 
 int main()
 {
-    depth_execute = malloc(sizeof(int));
-    depth_execute[0] = 1; //execute entry point;
+    // #ifdef YYDEBUG
+    //     yydebug = 1;
+    // #endif
 
     yyparse();
 
+    evaluate(ast_root);
+
+    tree_destroy(ast_root);
     free(memory);
     return 0;
 }

@@ -1,12 +1,1 @@
-int a = 4 * 2;
-show a;
-
-int b;
-b = 3;
-show b;
-
-int c = a + 4;
-show c;
-
-int d = (2 + 3) * 2;
-show d;
+show 2;
