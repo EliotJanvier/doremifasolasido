@@ -75,6 +75,8 @@
     #include "./include/list.h"
     #include "./include/tree.h"
     #include "./include/keyword.h"
+    #include "./include/var_cst.h"
+    #include "./include/evaluators.h"
     #include <stdlib.h>
     #include <string.h>
 
@@ -88,13 +90,25 @@
     type *name = malloc(sizeof(type)); \
     *name = _val
 
+    extern obj_t buffer = (obj_t) 0;
+    extern tree_t tree_buffer[3] = {0};
+
+    #define node_create(this, type, obj, first, second, third) \
+        do { \
+            buffer = (obj_t) obj; \
+            tree_buffer[0] = first; \
+            tree_buffer[1] = second; \
+            tree_buffer[2] = third; \
+            this = new_tree(type, (obj_t) obj, node_id++, first, second, third); \
+        } while (0);
+
     extern size_t mem_size = 0;
     extern variable_t *memory = NULL;
 
     tree_t ast_root = NULL;
     static int node_id = 0;
 
-#line 98 "hel.tab.c"
+#line 112 "hel.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -149,7 +163,10 @@ enum yysymbol_kind_t
   YYSYMBOL_input = 24,                     /* input  */
   YYSYMBOL_statement = 25,                 /* statement  */
   YYSYMBOL_exp = 26,                       /* exp  */
-  YYSYMBOL_keyword_exp = 27                /* keyword_exp  */
+  YYSYMBOL_keyword_exp = 27,               /* keyword_exp  */
+  YYSYMBOL_type = 28,                      /* type  */
+  YYSYMBOL_var = 29,                       /* var  */
+  YYSYMBOL_string = 30                     /* string  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -457,18 +474,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  8
+#define YYFINAL  15
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   18
+#define YYLAST   30
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  23
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  5
+#define YYNNTS  8
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  12
+#define YYNRULES  17
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  20
+#define YYNSTATES  28
 
 /* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   277
@@ -517,10 +534,10 @@ static const yytype_int8 yytranslate[] =
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_int8 yyrline[] =
+static const yytype_uint8 yyrline[] =
 {
-       0,    69,    69,    70,    74,    75,    79,    80,    81,    82,
-      83,    84,    88
+       0,    96,    96,   101,   110,   116,   117,   118,   119,   120,
+     121,   122,   123,   127,   131,   135,   136,   140
 };
 #endif
 
@@ -540,7 +557,7 @@ static const char *const yytname[] =
   "SEMICOLON", "PLUS", "MINUS", "DIVIDED_BY", "TIMES", "STRING", "VARNAME",
   "EQUALS", "DQUOTES", "LPAREN", "RPAREN", "LBRACKET", "RBRACKET",
   "TYPE_STRING", "TYPE_INT", "KW_SHOW", "KW_IF", "$accept", "input",
-  "statement", "exp", "keyword_exp", YY_NULLPTR
+  "statement", "exp", "keyword_exp", "type", "var", "string", YY_NULLPTR
 };
 
 static const char *
@@ -561,7 +578,7 @@ static const yytype_int16 yytoknum[] =
 };
 #endif
 
-#define YYPACT_NINF (-6)
+#define YYPACT_NINF (-9)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -575,8 +592,9 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -5,    -6,    -5,    15,    -5,    -4,    -6,     0,    -6,    -6,
-      -5,    -6,    -5,    -5,    -5,    -5,     0,     0,     0,     0
+      -1,    -9,    -9,    -1,    -9,    -1,     1,    -1,    19,    -9,
+      -8,    -9,    -9,    14,    -2,    -9,    -9,    -9,    -1,    -1,
+      -1,    -1,    -9,    -9,    -2,    -2,    -2,    -2
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -584,20 +602,21 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       2,     6,     0,     0,     2,     0,    11,    12,     1,     3,
-       2,     5,     0,     0,     0,     0,     8,     7,    10,     9
+       0,     5,    17,     0,    14,     0,     0,     2,     0,    11,
+       0,    12,    16,     0,    13,     1,     3,     4,     0,     0,
+       0,     0,    15,     6,     7,     8,    10,     9
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -6,    17,    18,    -1,    -6
+      -9,     2,    -9,    -3,    -9,    -9,    -9,     3
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     9,    10,     5,     6
+      -1,     6,     7,     8,     9,    10,    11,    12
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -605,36 +624,41 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       1,     7,    11,    12,    13,    14,    15,    12,    13,    14,
-      15,    16,    17,    18,    19,     8,     2,     3,     4
+      13,    15,    14,     2,     1,    18,    19,    20,    21,    16,
+       2,     0,     0,    22,     3,    24,    25,    26,    27,     4,
+       5,    18,    19,    20,    21,    17,    18,    19,    20,    21,
+      23
 };
 
 static const yytype_int8 yycheck[] =
 {
-       5,     2,     6,     7,     8,     9,    10,     7,     8,     9,
-      10,    12,    13,    14,    15,     0,    21,     0,     0
+       3,     0,     5,    11,     5,     7,     8,     9,    10,     7,
+      11,    -1,    -1,    10,    15,    18,    19,    20,    21,    20,
+      21,     7,     8,     9,    10,     6,     7,     8,     9,    10,
+      16
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     5,    21,    24,    25,    26,    27,    26,     0,    24,
-      25,     6,     7,     8,     9,    10,    26,    26,    26,    26
+       0,     5,    11,    15,    20,    21,    24,    25,    26,    27,
+      28,    29,    30,    26,    26,     0,    24,     6,     7,     8,
+       9,    10,    30,    16,    26,    26,    26,    26
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    23,    24,    24,    25,    25,    26,    26,    26,    26,
-      26,    26,    27
+       0,    23,    24,    24,    25,    26,    26,    26,    26,    26,
+      26,    26,    26,    27,    28,    29,    29,    30
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     0,     2,     2,     2,     1,     3,     3,     3,
-       3,     1,     2
+       0,     2,     1,     2,     2,     1,     3,     3,     3,     3,
+       3,     1,     1,     2,     1,     2,     1,     1
 };
 
 
@@ -1101,56 +1125,103 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-  case 4: /* statement: statement statement  */
-#line 74 "hel.y"
-                            {(yyvsp[-1].tree)->next = (yyvsp[0].tree);}
-#line 1108 "hel.tab.c"
+  case 2: /* input: statement  */
+#line 96 "hel.y"
+                             {
+        if (ast_root == NULL || ast_root->node_id > (yyvsp[0].tree)->node_id) {
+            ast_root = (yyvsp[0].tree);
+        }
+    }
+#line 1136 "hel.tab.c"
     break;
 
-  case 5: /* statement: exp SEMICOLON  */
-#line 75 "hel.y"
-                            {if (ast_root == NULL) ast_root = (yyvsp[-1].tree);}
-#line 1114 "hel.tab.c"
+  case 3: /* input: statement input  */
+#line 101 "hel.y"
+                            {
+        if (ast_root == NULL || ast_root->node_id > (yyvsp[-1].tree)->node_id) {
+            ast_root = (yyvsp[-1].tree);
+        }
+        (yyvsp[-1].tree)->next = (yyvsp[0].tree);
+    }
+#line 1147 "hel.tab.c"
     break;
 
-  case 6: /* exp: NUM  */
-#line 79 "hel.y"
-                            {(yyval.tree) = new_tree(NODE_INT, (obj_t) (yyvsp[0].num), node_id++, NULL, NULL, NULL);}
-#line 1120 "hel.tab.c"
+  case 4: /* statement: exp SEMICOLON  */
+#line 110 "hel.y"
+                            {
+        (yyval.tree) = (yyvsp[-1].tree);
+    }
+#line 1155 "hel.tab.c"
     break;
 
-  case 7: /* exp: exp MINUS exp  */
-#line 80 "hel.y"
-                            {(yyval.tree) = new_tree(NODE_OPERATOR, (obj_t) OP_SUB, node_id++, (yyvsp[-2].tree), (yyvsp[0].tree), NULL);}
-#line 1126 "hel.tab.c"
+  case 5: /* exp: NUM  */
+#line 116 "hel.y"
+                            {node_create((yyval.tree), NODE_INT, (yyvsp[0].num), NULL, NULL, NULL);}
+#line 1161 "hel.tab.c"
     break;
 
-  case 8: /* exp: exp PLUS exp  */
-#line 81 "hel.y"
-                            {(yyval.tree) = new_tree(NODE_OPERATOR, (obj_t) OP_ADD, node_id++, (yyvsp[-2].tree), (yyvsp[0].tree), NULL);}
-#line 1132 "hel.tab.c"
+  case 6: /* exp: LPAREN exp RPAREN  */
+#line 117 "hel.y"
+                            {(yyval.tree) = (yyvsp[-1].tree);}
+#line 1167 "hel.tab.c"
+    break;
+
+  case 7: /* exp: exp PLUS exp  */
+#line 118 "hel.y"
+                            {node_create((yyval.tree), NODE_OPERATOR, operators[OP_ADD], (yyvsp[-2].tree), (yyvsp[0].tree), NULL);}
+#line 1173 "hel.tab.c"
+    break;
+
+  case 8: /* exp: exp MINUS exp  */
+#line 119 "hel.y"
+                            {node_create((yyval.tree), NODE_OPERATOR, operators[OP_SUB], (yyvsp[-2].tree), (yyvsp[0].tree), NULL);}
+#line 1179 "hel.tab.c"
     break;
 
   case 9: /* exp: exp TIMES exp  */
-#line 82 "hel.y"
-                            {(yyval.tree) = new_tree(NODE_OPERATOR, (obj_t) OP_MUL, node_id++, (yyvsp[-2].tree), (yyvsp[0].tree), NULL);}
-#line 1138 "hel.tab.c"
+#line 120 "hel.y"
+                            {node_create((yyval.tree), NODE_OPERATOR, operators[OP_MUL], (yyvsp[-2].tree), (yyvsp[0].tree), NULL);}
+#line 1185 "hel.tab.c"
     break;
 
   case 10: /* exp: exp DIVIDED_BY exp  */
-#line 83 "hel.y"
-                            {(yyval.tree) = new_tree(NODE_OPERATOR, (obj_t) OP_DIV, node_id++, (yyvsp[-2].tree), (yyvsp[0].tree), NULL);}
-#line 1144 "hel.tab.c"
+#line 121 "hel.y"
+                            {node_create((yyval.tree), NODE_OPERATOR, operators[OP_DIV], (yyvsp[-2].tree), (yyvsp[0].tree), NULL);}
+#line 1191 "hel.tab.c"
     break;
 
-  case 12: /* keyword_exp: KW_SHOW exp  */
-#line 88 "hel.y"
-                             {(yyval.tree) = new_tree(NODE_KW, (obj_t) keyword_handlers[KWORD_SHOW], node_id++, (yyvsp[0].tree), NULL, NULL);}
-#line 1150 "hel.tab.c"
+  case 13: /* keyword_exp: KW_SHOW exp  */
+#line 127 "hel.y"
+                             {node_create((yyval.tree), NODE_KW, (obj_t) keyword_handlers[KWORD_SHOW], (yyvsp[0].tree), NULL, NULL);}
+#line 1197 "hel.tab.c"
+    break;
+
+  case 14: /* type: TYPE_INT  */
+#line 131 "hel.y"
+                            {(yyval.num) = TYPE_INT;}
+#line 1203 "hel.tab.c"
+    break;
+
+  case 15: /* var: type string  */
+#line 135 "hel.y"
+                            {node_create((yyval.tree), NODE_VARIABLE, (yyvsp[-1].num), (yyvsp[0].tree), NULL, NULL);}
+#line 1209 "hel.tab.c"
+    break;
+
+  case 16: /* var: string  */
+#line 136 "hel.y"
+                            {node_create((yyval.tree), NODE_VARIABLE, (yyvsp[0].tree), NULL, NULL, NULL);}
+#line 1215 "hel.tab.c"
+    break;
+
+  case 17: /* string: STRING  */
+#line 140 "hel.y"
+                            {node_create((yyval.tree), NODE_STRING, (yyvsp[0].string), NULL, NULL, NULL);}
+#line 1221 "hel.tab.c"
     break;
 
 
-#line 1154 "hel.tab.c"
+#line 1225 "hel.tab.c"
 
       default: break;
     }
@@ -1344,8 +1415,24 @@ yyreturn:
   return yyresult;
 }
 
-#line 92 "hel.y"
+#line 143 "hel.y"
 
+
+
+
+
+
+
+
+
+
+
+void show_tree(tree_t tree) {
+    if (tree == NULL)
+        return;
+    printf("[%p]\n", tree);
+    show_tree(tree->second);
+}
 
 int main()
 {
@@ -1355,9 +1442,13 @@ int main()
 
     yyparse();
 
+
     evaluate(ast_root);
 
-    tree_destroy(ast_root);
+    printf("memory[0].name = [%s]\n", memory[0].name);
+    printf("index of coolname is %d\n", get_var_index_by_name("coolvarname"));
+
+    // tree_destroy(ast_root);
     free(memory);
     return 0;
 }

@@ -11,8 +11,10 @@ void show_variable(variable_t *var)
     switch (var->type)
     {
     case TYPE_INT:
-        printf("%s = %d\n", var->name, *((int *) var->ptr));
+        // printf("%s = [%d]\n", var->name, *((int *) var->ptr)); //out
         break;
+    case TYPE_STRING:
+        // printf("%s = [%s]\n", var_name, *((char **) var->ptr));;
     default:
         break;
     }

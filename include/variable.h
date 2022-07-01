@@ -27,4 +27,6 @@ variable_t *get_var_by_name(char *name);
 
 int get_var_index_by_name(char *name);
 
+obj_t *get_var_value_by_name(char *name);
+
 #endif

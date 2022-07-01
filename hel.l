@@ -4,7 +4,7 @@
 %}
 
 number ([0-9])+
-string ([a-z])+
+string ([a-zA-Z_])+
 
 %%
 

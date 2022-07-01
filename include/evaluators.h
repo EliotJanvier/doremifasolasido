@@ -5,5 +5,8 @@
 obj_t eval_node_int(tree_t tree);
 obj_t eval_node_op(tree_t tree);
 obj_t eval_node_kw(tree_t tree);
+obj_t eval_node_variable(tree_t tree);
+obj_t eval_node_string(tree_t tree);
+
 
 #endif

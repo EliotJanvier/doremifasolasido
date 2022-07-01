@@ -1,1 +1,10 @@
+show variable_creation;
+int coolvarname;
+
+show small_exp;
+show 1;
 show 2;
+show 2 + 1;
+
+show parenthesis;
+show (2 + 3) * 2;
